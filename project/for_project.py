@@ -61,11 +61,10 @@ class Email:
 
     @email.setter
     def email(self, email):
-        if re.search("^[\w\.-]+@[\w\.-]+(\.[\w]+)+", email):
+        if email == "-" or re.search("^[\w\.-]+@[\w\.-]+(\.[\w]+)+", email):
             self.__email = email
         else:
-            print(
-                "The email is not saved because it has an incorrect format \nTry to edit like the example: *****@***.***")
+            print("The email is not saved because it has an incorrect format \nTry to edit like the example: *****@***.***")
 
     def __str__(self):
         return f"{self.__email}"
@@ -83,7 +82,7 @@ class Birthday:
     @birthday.setter
     def birthday(self, birthday):
         try:
-            if time.strptime(birthday, '%d/%m/%Y'):
+            if birthday == "-" or time.strptime(birthday, '%d/%m/%Y'):
                 self.__birthday = birthday
         except ValueError:
             print('The date is not saved because it has an incorrect format \nTry to edit like the example: DD/MM/YYYY')
@@ -163,9 +162,9 @@ class AddressBook(UserDict):
         return list
 
     def __str__(self):
-        for key, val in self.data.items():
-            print(f'{str(key)}:{str(val)}')
         print(f'Total contacts: {len(self.data)}')
+        for key, val in self.data.items():
+            print(f'{str(key)}:{str(val)}'.removesuffix(','))
 
 
 def main():
@@ -182,9 +181,9 @@ def main():
                 Record(
                     sep_command[2].title(),
                     sep_command[3],
-                    sep_command[4],
-                    sep_command[5],
-                    sep_command[6:]
+                    sep_command[4] if len(sep_command) > 4 else "-",
+                    sep_command[5] if len(sep_command) > 5 else "-",
+                    sep_command[6:] if len(sep_command) > 6 else "-"
                 )
             )
         elif sep_command[0] == "show" and sep_command[1] == "all":
