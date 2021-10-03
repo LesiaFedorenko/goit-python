@@ -6,10 +6,10 @@ users = [{'name': 'Lesia', 'birthday': '1977-07-28'},
          {'name': 'Vova', 'birthday': '1998-07-26'},
          {'name': 'Sasha', 'birthday': '2000-02-26'},
          {'name': 'Natasha', 'birthday': '1988-07-31'},
-         {'name': 'Lena', 'birthday': '1956-08-01'},
+         {'name': 'Lena', 'birthday': '1956-09-01'},
          {'name': 'Oleg', 'birthday': '2001-07-24'},
-         {'name': 'Pavel', 'birthday': '2000-08-04'},
-         {'name': 'Roma', 'birthday': '2020-08-07'},
+         {'name': 'Pavel', 'birthday': '2000-09-04'},
+         {'name': 'Roma', 'birthday': '2020-09-10'},
          ]
 
 def congratulate(users):
