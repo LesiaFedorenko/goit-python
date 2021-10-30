@@ -6,21 +6,12 @@ from normalize import normalize
 import concurrent.futures
 
 
-def handle_image(file: object, root_folder: object, dist: object) -> object:
+def handle_file(file: Path, root_folder: Path, dist):
     target_folder = root_folder / dist
     target_folder.mkdir(exist_ok=True)
     ext = Path(file).suffix
     new_name = normalize(file.name.replace(ext, "")) + ext
     file.replace(target_folder / new_name)
-
-
-def handle_other(file, root_folder, dist):
-    target_folder = root_folder / dist
-    target_folder.mkdir(exist_ok=True)
-    ext = Path(file).suffix
-    new_name = normalize(file.name.replace(ext, "")) + ext
-    file.replace(target_folder / new_name)
-
 
 def handle_archive(file: Path, root_folder: Path, dist):
     target_folder = root_folder / dist
@@ -51,24 +42,36 @@ def main(folder):
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         tuple_images = tuple(
-            scan.JPEG_IMAGES + scan.JPG_IMAGES + scan.PNG_IMAGES + scan.SVG_IMAGES + scan.AVI_VIDEOS + scan.MP4_VIDEOS + scan.MOV_VIDEOS + scan.MKV_VIDEOS + scan.DOC_DOCUMENTS + scan.DOCX_DOCUMENTS + scan.TXT_DOCUMENTS + scan.PDF_DOCUMENTS + scan.XLSX_DOCUMENTS + scan.PPTX_DOCUMENTS + scan.MP3_MUSICS + scan.OGG_MUSICS + scan.WAV_MUSICS + scan.AMR_MUSICS)
+            scan.JPEG_IMAGES + scan.JPG_IMAGES +scan.PNG_IMAGES + scan.SVG_IMAGES +
+            scan.AVI_VIDEOS + scan.MP4_VIDEOS + scan.MOV_VIDEOS + scan.MKV_VIDEOS +
+            scan.DOC_DOCUMENTS + scan.DOCX_DOCUMENTS +
+            scan.TXT_DOCUMENTS + scan.PDF_DOCUMENTS +
+            scan.XLSX_DOCUMENTS + scan.PPTX_DOCUMENTS +
+            scan.MP3_MUSICS + scan.OGG_MUSICS + scan.WAV_MUSICS + scan.AMR_MUSICS)
         tuple_folder = tuple([folder] * len(tuple_images))
         tuple_name = tuple(
-            ["JPEG"] * len(scan.JPEG_IMAGES) + ["JPG"] *
-            len(scan.JPG_IMAGES) + ["PNG"] *
-            len(scan.PNG_IMAGES) + ["SVG"] * len(scan.SVG_IMAGES) + ["AVI"] * len(scan.AVI_VIDEOS) + ["MP4"] *
-            len(scan.MP4_VIDEOS) + ["MOV"] *
-            len(scan.MOV_VIDEOS) + ["MKV"] * len(scan.MKV_VIDEOS) + ["DOC"] * len(scan.DOC_DOCUMENTS) + ["DOCX"] * len(
-                scan.DOCX_DOCUMENTS) + ["TXT"] * len(scan.TXT_DOCUMENTS) + ["PDF"] * len(
-                scan.PDF_DOCUMENTS) + ["XLSX"] * len(scan.XLSX_DOCUMENTS) + ["PPTX"] * len(scan.PPTX_DOCUMENTS) + [
-                "MP3"] * len(
-                scan.MP3_MUSICS) + ["OGG"] * len(scan.OGG_MUSICS) + ["WAV"] * len(scan.WAV_MUSICS) + ["AMR"] * len(
-                scan.AMR_MUSICS))
-        executor.map(handle_image, tuple_images, tuple_folder, tuple_name)
-
+            ["JPEG"] * len(scan.JPEG_IMAGES) +
+            ["JPG"] * len(scan.JPG_IMAGES) +
+            ["PNG"] * len(scan.PNG_IMAGES) +
+            ["SVG"] * len(scan.SVG_IMAGES) +
+            ["AVI"] * len(scan.AVI_VIDEOS) +
+            ["MP4"] *len(scan.MP4_VIDEOS) +
+            ["MOV"] *len(scan.MOV_VIDEOS) +
+            ["MKV"] * len(scan.MKV_VIDEOS) +
+            ["DOC"] * len(scan.DOC_DOCUMENTS) +
+            ["DOCX"] * len(scan.DOCX_DOCUMENTS) +
+            ["TXT"] * len(scan.TXT_DOCUMENTS) +
+            ["PDF"] * len(scan.PDF_DOCUMENTS) +
+            ["XLSX"] * len(scan.XLSX_DOCUMENTS) +
+            ["PPTX"] * len(scan.PPTX_DOCUMENTS) +
+            ["MP3"] * len(scan.MP3_MUSICS) +
+            ["OGG"] * len(scan.OGG_MUSICS) +
+            ["WAV"] * len(scan.WAV_MUSICS) +
+            ["AMR"] * len(scan.AMR_MUSICS))
+        executor.map(handle_file, tuple_images, tuple_folder, tuple_name)
 
         for file in scan.OTHER:
-            executor.submit(handle_other, file, folder, "OTHER")
+            executor.submit(handle_file, file, folder, "OTHER")
 
         for file in scan.ARCH:
             executor.submit(handle_archive, file, folder, "ARCH")
