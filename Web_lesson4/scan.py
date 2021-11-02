@@ -59,14 +59,12 @@ def get_extension(file_name) -> str:
 def scan(folder: Path):
     for item in folder.iterdir():
         if item.is_dir():
-            if item.name not in (
-                    "JPEG", "JPG", "PNG", "SVG", "OTHER", "ARCH", 'AVI', 'MP4', 'MOV', 'MKV', 'DOC', 'DOCX', 'TXT',
-                    'PDF', 'XLSX', 'PPTX', 'MP3', 'OGG', 'WAV', 'AMR'):
+            if item.name not in REGISTERED_EXTENSIONS.keys():
                 FOLDERS.append(item)
                 thread_dir = Thread(target=scan, args=(item,))
                 threads.append(thread_dir)
                 thread_dir.start()
-                # scan(item)
+
             continue
 
         extension = get_extension(item.name)
@@ -81,34 +79,3 @@ def scan(folder: Path):
             except KeyError:
                 UNKNOWN.add(extension)
                 OTHER.append(new_name)
-
-
-if __name__ == "__main__":
-    scan_path = sys.argv[1]
-    print(f"Start in folder {scan_path}")
-
-    search_folder = Path(scan_path)
-    scan(search_folder)
-    print(f"Images jpeg: {JPEG_IMAGES}")
-    print(f"Images jpg: {JPG_IMAGES}")
-    print(f"Images png: {PNG_IMAGES}")
-    print(f"Images svg: {SVG_IMAGES}")
-    print(f"Videos avi: {AVI_VIDEOS}")
-    print(f"Videos mp4: {MP4_VIDEOS}")
-    print(f"Videos mov: {MOV_VIDEOS}")
-    print(f"Videos mkv: {MKV_VIDEOS}")
-    print(f"Documents doc: {DOC_DOCUMENTS}")
-    print(f"Documents docx: {DOCX_DOCUMENTS}")
-    print(f"Documents txt: {TXT_DOCUMENTS}")
-    print(f"Documents pdf: {PDF_DOCUMENTS}")
-    print(f"Documents xlsx: {XLSX_DOCUMENTS}")
-    print(f"Documents pptx: {PPTX_DOCUMENTS}")
-    print(f"Musics mp3: {MP3_MUSICS}")
-    print(f"Musics ogg: {OGG_MUSICS}")
-    print(f"Musics wav: {WAV_MUSICS}")
-    print(f"Musics amr: {AMR_MUSICS}")
-    print(f"Archives: {ARCH}")
-    print(f"Unknown files: {OTHER}")
-    print(f"There are file of types: {EXTENSION}")
-    print(f"Unknown types of file: {UNKNOWN}")
-
