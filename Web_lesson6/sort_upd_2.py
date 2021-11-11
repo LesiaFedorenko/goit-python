@@ -94,10 +94,10 @@ async def scan(folder: Path):
                 current_container = REGISTERED_EXTENSIONS[extension]
                 EXTENSION.add(extension)
                 current_container.append(new_name)
-            except KeyError:
-                UNKNOWN.add(extension)
-                OTHER.append(new_name)
 
+            except KeyError:
+                    UNKNOWN.add(extension)
+                    OTHER.append(new_name)
 
 async def handle_file(file: Path, root_folder: Path, dist):
     target_folder = root_folder / dist
@@ -109,11 +109,10 @@ async def handle_file(file: Path, root_folder: Path, dist):
         archive_folder.mkdir(exist_ok=True)  # create folder ARCH/name_archives
         try:
             shutil.unpack_archive(file, archive_folder)
-
         except shutil.ReadError:
             archive_folder.rmdir()
             return
-        await file.unlink()
+        file.unlink()
     else:
         new_name = normalize(file.name.replace(ext, "")) + ext
         await file.replace(target_folder / new_name)
@@ -129,71 +128,16 @@ async def handle_folder(folder: Path):
 async def main(folder):
     await scan(folder)
 
-    # for items in REGISTERED_EXTENSIONS.values():
-    #     for file in items:
-    #         folder_new = list(REGISTERED_EXTENSIONS.keys())[list(REGISTERED_EXTENSIONS.values()).index(items)]
-    #         await handle_file(file, folder, folder_new)
-
-
-    for file in JPEG_IMAGES:
-        await handle_file(file, folder, "JPEG")
-
-    for file in JPG_IMAGES:
-        await handle_file(file, folder, "JPG")
-
-    for file in PNG_IMAGES:
-        await handle_file(file, folder, "PNG")
-
-    for file in SVG_IMAGES:
-        await handle_file(file, folder, "SVG")
-
-    for file in AVI_VIDEOS:
-        await handle_file(file, folder, "AVI")
-
-    for file in MP4_VIDEOS:
-        await handle_file(file, folder, "MP4")
-
-    for file in MOV_VIDEOS:
-        await handle_file(file, folder, "MOV")
-
-    for file in MKV_VIDEOS:
-        await handle_file(file, folder, "MKV")
-
-    for file in DOC_DOCUMENTS:
-        await handle_file(file, folder, "DOC")
-
-    for file in DOCX_DOCUMENTS:
-        await handle_file(file, folder, "DOCX")
-
-    for file in TXT_DOCUMENTS:
-        await handle_file(file, folder, "TXT")
-
-    for file in PDF_DOCUMENTS:
-        await handle_file(file, folder, "PDF")
-
-    for file in XLSX_DOCUMENTS:
-        await handle_file(file, folder, "XLSX")
-
-    for file in PPTX_DOCUMENTS:
-        await handle_file(file, folder, "PPTX")
-
-    for file in MP3_MUSICS:
-        await handle_file(file, folder, "MP3")
-
-    for file in OGG_MUSICS:
-        await handle_file(file, folder, "OGG")
-
-    for file in WAV_MUSICS:
-        await handle_file(file, folder, "WAV")
-
-    for file in AMR_MUSICS:
-        await handle_file(file, folder, "AMR")
+    for file in ARCH:
+        await handle_file(file, folder, "ARCH")
 
     for file in OTHER:
         await handle_file(file, folder, "OTHER")
 
-    for file in ARCH:
-        await handle_file(file, folder, "ARCH")
+    for items in REGISTERED_EXTENSIONS.values():
+        for file in items:
+            folder_new = list(REGISTERED_EXTENSIONS.keys())[list(REGISTERED_EXTENSIONS.values()).index(items)]
+            await handle_file(file, folder, folder_new)
 
     for f in FOLDERS:
         await handle_folder(f)
@@ -203,6 +147,4 @@ if __name__ == "__main__":
     scan_path = sys.argv[1]
     print(f"Start in folder {scan_path}")
     sort_folder = Path(scan_path)
-    print(sort_folder)
-    print(sort_folder.resolve())
     asyncio.run(main(sort_folder.resolve()))
